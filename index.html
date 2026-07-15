@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A local GSAP-driven visual study of Pacôme Pertant's motion portfolio." />
+    <title>Pacôme Pertant ✲ Portfolio — GSAP Study</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="loader" aria-label="Portfolio introduction">
+      <div class="loader-mark" aria-hidden="true">
+        <img src="assets/jensen-j-logo.png" alt="" />
+      </div>
+      <p class="loader-copy"><span>Styles come and go.</span><span>Good design is a language, not a style.</span></p>
+      <button class="enter-button" type="button"><span>Watch wonderful works</span><i></i></button>
+      <button class="silent-enter" type="button">Enter the world of Jensen</button>
+      <div class="loader-progress"><span class="loader-count">0</span><span>%</span></div>
+    </div>
+
+    <div class="site-shell" aria-hidden="true">
+      <div class="ambient" aria-hidden="true">
+        <div class="ambient-image"></div>
+        <div class="ambient-glow glow-a"></div>
+        <div class="ambient-glow glow-b"></div>
+        <svg class="orbit-lines" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+          <path d="M-100 650 C 140 180, 450 870, 700 310 S 1180 120, 1320 500" />
+          <path d="M-80 230 C 280 520, 390 70, 720 470 S 1080 770, 1300 210" />
+          <circle cx="600" cy="450" r="255" />
+          <circle cx="600" cy="450" r="360" />
+        </svg>
+        <div class="grain"></div>
+      </div>
+
+      <section class="spiral-scene" aria-label="Scrollable 3D project spiral">
+        <div class="spiral-world"></div>
+        <p class="spiral-hint">scroll to orbit · drag on touch</p>
+      </section>
+
+      <section class="project-detail" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="detail-title">
+        <button class="detail-close" type="button" aria-label="Close project">
+          <span></span><span></span>
+        </button>
+        <div class="detail-hero">
+          <div class="detail-gallery">
+            <div class="detail-peek detail-peek-prev" aria-hidden="true"></div>
+            <button class="detail-arrow detail-prev" type="button" aria-label="Previous image"></button>
+            <div class="detail-stage">
+              <div class="detail-viewport">
+                <div class="detail-track"></div>
+              </div>
+              <p class="detail-counter" aria-live="polite">01 / 04</p>
+              <div class="detail-meta" aria-hidden="true">
+                <span class="detail-year"></span>
+                <span class="detail-slug"></span>
+                <span>PNG</span>
+              </div>
+            </div>
+            <button class="detail-arrow detail-next" type="button" aria-label="Next image"></button>
+            <div class="detail-peek detail-peek-next" aria-hidden="true"></div>
+          </div>
+          <h2 class="detail-title" id="detail-title"></h2>
+          <p class="detail-caption"></p>
+          <button class="detail-scroll-next" type="button"><span>Advanced A+</span><i aria-hidden="true"></i></button>
+        </div>
+        <section class="aplus-section" aria-label="Advanced A+ product modules">
+          <header class="aplus-header">
+            <p>Advanced A+</p>
+            <span>7 modules · 1464 × 600</span>
+          </header>
+          <div class="aplus-list"></div>
+        </section>
+      </section>
+
+      <header class="topbar">
+        <a class="brand" href="#projects" aria-label="Go to projects">
+          <img src="assets/mascot-green.png" alt="" />
+          <span class="brand-tag">motion<br />&amp; sound ✲</span>
+        </a>
+
+        <nav class="view-switch" aria-label="Project view">
+          <button class="view-button is-active" data-view="spiral" type="button"><span>Spiral</span><span>Spiral</span></button>
+          <i></i>
+          <button class="view-button" data-view="list" type="button"><span>List</span><span>List</span></button>
+        </nav>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-panel">
+          <span class="menu-dot"></span><span class="menu-label">Menu</span>
+        </button>
+      </header>
+
+      <aside class="menu-panel" id="menu-panel" aria-hidden="true">
+        <button class="menu-close" type="button" aria-label="Close menu">&times;</button>
+        <nav>
+          <a href="#projects" data-menu-action="projects">Projects</a>
+          <a href="#about-page" data-menu-page="about">About</a>
+          <a href="#contact-page" data-menu-page="contact">Contact</a>
+        </nav>
+        <div class="menu-footer">
+          <div class="social-links">
+            <a href="https://www.xiaohongshu.com/user/profile/5dfeeeba00000000010010cd" target="_blank" rel="noreferrer" aria-label="小红书个人主页"><img src="assets/icon-xiaohongshu.svg" alt="" /></a>
+            <a href="https://www.zcool.com.cn/u/16536380" target="_blank" rel="noreferrer" aria-label="站酷个人主页"><img src="assets/icon-zcool.svg" alt="" /></a>
+            <a href="https://space.bilibili.com/388233547?spm_id_from=333.1007.0.0" target="_blank" rel="noreferrer" aria-label="哔哩哔哩个人主页"><img src="assets/icon-bilibili.svg" alt="" /></a>
+          </div>
+        </div>
+      </aside>
+
+      <section class="menu-subpage" id="about-page" data-page="about" aria-hidden="true" aria-labelledby="about-page-title">
+        <button class="menu-subpage-close" type="button" aria-label="Close About"><span></span><span></span></button>
+        <div class="menu-subpage-content">
+          <p class="eyebrow">About</p>
+          <h2 id="about-page-title">Hi, I&rsquo;m Jensen. A tech-driven Amazon designer</h2>
+          <p>Crafting high-converting packaging and complete listing visuals through the power of 3D rendering and AI workflow automation.</p>
+        </div>
+      </section>
+
+      <section class="menu-subpage" id="contact-page" data-page="contact" aria-hidden="true" aria-labelledby="contact-page-title">
+        <button class="menu-subpage-close" type="button" aria-label="Close Contact"><span></span><span></span></button>
+        <div class="menu-subpage-content">
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-page-title">Let&rsquo;s make something cool.</h2>
+          <a class="contact-email" href="mailto:390760420@qq.com">390760420@qq.com</a>
+          <div class="contact-socials social-links">
+            <a href="https://www.xiaohongshu.com/user/profile/5dfeeeba00000000010010cd" target="_blank" rel="noreferrer" aria-label="小红书个人主页"><img src="assets/icon-xiaohongshu.svg" alt="" /></a>
+            <a href="https://www.zcool.com.cn/u/16536380" target="_blank" rel="noreferrer" aria-label="站酷个人主页"><img src="assets/icon-zcool.svg" alt="" /></a>
+            <a href="https://space.bilibili.com/388233547?spm_id_from=333.1007.0.0" target="_blank" rel="noreferrer" aria-label="哔哩哔哩个人主页"><img src="assets/icon-bilibili.svg" alt="" /></a>
+          </div>
+        </div>
+      </section>
+
+      <main>
+        <section class="projects" id="projects" aria-label="Selected projects">
+          <p class="eyebrow">Selected motion &amp; sound experiments · 2024—2026</p>
+          <div class="project-list">
+            <a class="project" href="#" data-image="assets/p5/p5-black-01.jpg" data-index="01"><span>P5 50000Mah大容量移动电源</span><small>2024</small></a>
+            <a class="project" href="https://www.behance.net/gallery/221358177/The-disease-spread-on-Tiktok" data-image="assets/carousel-4.png" data-index="02"><span>The disease spread on Tiktok</span><small>2024</small></a>
+            <a class="project" href="https://www.behance.net/gallery/223730619/Ah-PsychedelicsExplainer" data-image="assets/carousel-3.png" data-index="03"><span>Ah, Psychedelics</span><small>2025</small></a>
+            <a class="project" href="#" data-image="assets/carousel-2.png" data-index="04"><span>Thought</span><small>2025</small></a>
+            <a class="project" href="#" data-image="assets/carousel-5.png" data-index="05"><span>Jupiter</span><small>2026</small></a>
+            <a class="project" href="https://www.behance.net/gallery/238825325/CHROMATIK" data-image="assets/carousel-7.png" data-index="06"><span>Chromatik</span><small>2025</small></a>
+            <a class="project" href="https://www.behance.net/gallery/191741223/DIgital-Travel" data-image="assets/carousel-8.png" data-index="07"><span>Digital Travel</span><small>2024</small></a>
+            <a class="project" href="#" data-image="assets/carousel-6.png" data-index="08"><span>Mercedes AMG</span><small>2025</small></a>
+            <a class="project" href="https://www.behance.net/gallery/221365289/The-purity-revealed" data-image="assets/carousel-9.png" data-index="09"><span>The purity revealed</span><small>2025</small></a>
+          </div>
+        </section>
+
+        <section class="about" id="about">
+          <p class="eyebrow">A moving practice</p>
+          <h1>Hi, I&rsquo;m Jensen. A tech-driven Amazon designer</h1>
+          <p>Crafting high-converting packaging and complete listing visuals through the power of 3D rendering and AI workflow automation.</p>
+        </section>
+      </main>
+
+      <a class="showreel" href="https://www.behance.net/pacomepertant" aria-label="Watch showreel">
+        <span class="showreel-copy">SHOWREEL · 2025 · SHOWREEL · 2025 ·</span>
+        <img src="assets/reel-thumbnail.png" alt="Colorful hands from the showreel" />
+        <span class="play">Play</span>
+      </a>
+
+      <button class="sound-toggle" type="button" aria-pressed="false" aria-label="Toggle background music">
+        <span></span><span></span><span></span><span></span>
+      </button>
+
+      <audio class="background-music" src="assets/虚实之间_no-watermark.mp3" loop preload="metadata"></audio>
+
+      <div class="cursor-orb" aria-hidden="true"></div>
+    </div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script src="assets/ScrollTrigger.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

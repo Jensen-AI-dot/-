@@ -1,0 +1,20 @@
+{
+  "name": "Pacome Pertant motion portfolio — local GSAP study",
+  "mode": "visual-clone",
+  "design_system": {
+    "colors": { "background": "#0a0a0a", "foreground": "#fafafa", "muted": "#e6e6e6", "accent": "#21ffc0" },
+    "typography": { "family": "Helvetica Neue / Helvetica / Arial", "display_tracking": "-0.058em", "display_weight": 550 },
+    "shape_language": "pill controls, circular status marks, rounded media cards, organic orbital lines"
+  },
+  "design_style": ["motion-first", "minimal monochrome UI", "playful 3D media", "editorial oversized type"],
+  "visual_effects": {
+    "effect_intensity": "medium",
+    "implementation": "GSAP ticker-driven CSS 3D project helix, source-backed inertial wheel math, ScrollTrigger list branch, grain and grid overlays",
+    "motion_ease": "power3 / spring-like overshoot"
+  },
+  "evidence": {
+    "source": ["deployed HTML", "deployed CSS", "deployed Nuxt ProjectPlane/Controls math", "target window.__LOCAL_SANITY_ASSETS__ mapping"],
+    "partial": ["Three.js world-space units translated to responsive CSS pixel radii"],
+    "guess": ["GLSL vertex bending approximated with speed-dependent CSS rotation and skew"]
+  }
+}
