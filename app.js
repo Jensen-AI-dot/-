@@ -47,7 +47,7 @@ gsap.set([".loader-copy span", ".enter-button", ".silent-enter"], { autoAlpha: 0
 
 const projectCaptions = [
   "P5 50000Mah大容量移动电源",
-  "A visual study of digital contagion",
+  "H9 无线头戴式蓝牙耳机",
   "Psychedelic explainer film",
   "Robot file output",
   "A journey around Jupiter",
@@ -67,6 +67,16 @@ const projectGalleries = {
     "assets/p5/p5-black-06.jpg",
     "assets/p5/p5-black-07.jpg",
     "assets/p5/p5-black-08.jpg"
+  ],
+  "H9 无线头戴式蓝牙耳机": [
+    "assets/h9/h9-black-01.jpg",
+    "assets/h9/h9-black-02.jpg",
+    "assets/h9/h9-black-03.jpg",
+    "assets/h9/h9-black-04.jpg",
+    "assets/h9/h9-black-05.jpg",
+    "assets/h9/h9-black-06.jpg",
+    "assets/h9/h9-black-07.jpg",
+    "assets/h9/h9-black-08.jpg"
   ]
 };
 
@@ -80,14 +90,23 @@ const p5AplusModules = [
   ["assets/aplus/A+_07.jpg", "assets/aplus/A+_14.jpg"]
 ];
 
+// Add a project title here when its own product imagery is ready. Until then,
+// every project uses the same complete detail-page template as the P5 project.
+const projectAplusModules = {
+  "P5 50000Mah大容量移动电源": p5AplusModules
+};
+
+const createPlaceholderGallery = (image) => Array.from({ length: 8 }, () => image);
+const createPlaceholderAplus = () => p5AplusModules.map((moduleFrames) => [...moduleFrames]);
+
 const projects = projectLinks.map((link, index) => {
   const title = link.querySelector("span").textContent;
   return {
     title,
     year: link.querySelector("small").textContent,
     image: link.dataset.image,
-    gallery: projectGalleries[title] || [],
-    aplus: title === "P5 50000Mah大容量移动电源" ? p5AplusModules : [],
+    gallery: projectGalleries[title] || createPlaceholderGallery(link.dataset.image),
+    aplus: projectAplusModules[title] || createPlaceholderAplus(),
     caption: projectCaptions[index],
     slug: title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
   };
@@ -100,7 +119,7 @@ const spiralCards = [...projects, ...projects].map((project, index) => {
   card.href = `#project/${project.slug}`;
   card.dataset.index = String(index);
   card.setAttribute("aria-label", `${project.title}, ${project.year}`);
-  card.innerHTML = `<img src="${project.image}" alt="" draggable="false"><span class="spiral-card-label">${project.title} · ${project.year}</span>`;
+  card.innerHTML = `<img src="${project.image}" alt="" draggable="false" decoding="async"><span class="spiral-card-label">${project.title} · ${project.year}</span>`;
   spiralWorld.appendChild(card);
   return card;
 });
@@ -117,6 +136,13 @@ const spiralState = {
 
 const clamp = gsap.utils.clamp;
 const wrap = (value, length) => ((value % length) + length) % length;
+const spiralLayout = { width: innerWidth, height: innerHeight, mobile: innerWidth <= 760 };
+
+function refreshSpiralLayout() {
+  spiralLayout.width = innerWidth;
+  spiralLayout.height = innerHeight;
+  spiralLayout.mobile = innerWidth <= 760;
+}
 
 function updateSpiral() {
   if (!spiralState.active || spiralState.paused) return;
@@ -131,14 +157,14 @@ function updateSpiral() {
 
   const count = spiralCards.length;
   const centerIndex = Math.floor(count / 2);
-  const radiusX = Math.min(innerWidth * .225, 430);
-  const radiusZ = Math.min(innerWidth * .15, 285);
-  const verticalGap = clamp(52, 76, innerHeight * .074);
+  const radiusX = Math.min(spiralLayout.width * (spiralLayout.mobile ? .29 : .225), spiralLayout.mobile ? 176 : 430);
+  const radiusZ = Math.min(spiralLayout.width * (spiralLayout.mobile ? .22 : .15), spiralLayout.mobile ? 126 : 285);
+  const verticalGap = clamp(spiralLayout.mobile ? 44 : 52, spiralLayout.mobile ? 58 : 76, spiralLayout.height * (spiralLayout.mobile ? .058 : .074));
   const frontRelative = Math.PI / 2 / .85;
   const hiddenLift = (1 - spiralState.reveal) * 420;
   const radiusReveal = .48 + spiralState.reveal * .52;
   const speedBend = clamp(-10, 10, spiralState.velocity * 190);
-  const motionBlur = reducedMotion ? 0 : clamp(0, 2.1, Math.abs(spiralState.velocity) * 2.4);
+  const motionBlur = reducedMotion || spiralLayout.mobile ? 0 : clamp(0, 2.1, Math.abs(spiralState.velocity) * 2.4);
 
   spiralCards.forEach((card, index) => {
     // SOURCE constants from ProjectPlane.update(): verticalGap=.5, angleGap=.85, baseRadius=2.
@@ -146,7 +172,7 @@ function updateSpiral() {
     const relative = normalized - centerIndex;
     const angle = relative * .85;
     const x = Math.cos(angle) * radiusX * radiusReveal;
-    const y = (relative - frontRelative) * verticalGap - innerHeight * .018 - hiddenLift;
+    const y = (relative - frontRelative) * verticalGap - spiralLayout.height * (spiralLayout.mobile ? .01 : .018) - hiddenLift;
     const z = Math.sin(angle) * radiusZ * radiusReveal;
     const rotationY = (-angle + Math.PI / 2) * 180 / Math.PI;
     const edgeFade = clamp(0, 1, 1 - Math.max(0, Math.abs(relative) - 7) / 2);
@@ -154,11 +180,20 @@ function updateSpiral() {
     const focus = Math.pow(depth, 2.25);
     const depthFade = clamp(.18, 1, depth * 1.35);
     const opacity = edgeFade * (.42 + depthFade * .58) * spiralState.reveal;
-    const blur = clamp(0, 4.2, (1 - focus) * 3.1 + motionBlur);
+    const rawBlur = spiralLayout.mobile ? (1 - focus) * 1.1 : (1 - focus) * 3.1 + motionBlur;
+    const blur = Math.round(clamp(0, spiralLayout.mobile ? 1.2 : 4.2, rawBlur) * 4) / 4;
     const scale = .83 + focus * .47;
 
-    card.style.setProperty("--bend", speedBend.toFixed(3));
-    card.style.setProperty("--blur", `${blur.toFixed(2)}px`);
+    const bendValue = (Math.round(speedBend * 4) / 4).toFixed(2);
+    const blurValue = `${blur.toFixed(2)}px`;
+    if (card.dataset.bend !== bendValue) {
+      card.dataset.bend = bendValue;
+      card.style.setProperty("--bend", bendValue);
+    }
+    if (card.dataset.blur !== blurValue) {
+      card.dataset.blur = blurValue;
+      card.style.setProperty("--blur", blurValue);
+    }
     card.classList.toggle("is-focus", focus > .92 && edgeFade > .8);
     gsap.set(card, {
       x,
@@ -236,16 +271,17 @@ let detailPhysicalIndex = 1;
 let galleryAnimating = false;
 let detailFrames = [];
 let galleryTransition = null;
+let detailScrollTween = null;
 
 function updateDetailCounter() {
   detailCounter.textContent = `${String(detailSlideIndex + 1).padStart(2, "0")} / ${String(detailFrames.length).padStart(2, "0")}`;
 }
 
 function updateDetailPreviews() {
-  const previewCount = Math.min(3, Math.max(detailFrames.length - 1, 1));
+  const previewCount = Math.min(spiralLayout.mobile ? 1 : 3, Math.max(detailFrames.length - 1, 1));
   const renderStack = (direction) => Array.from({ length: previewCount }, (_, index) => {
     const source = detailFrames[wrap(detailSlideIndex + direction * (index + 1), detailFrames.length)];
-    return `<figure class="detail-peek-card"><img src="${source}" alt="" draggable="false"></figure>`;
+    return `<figure class="detail-peek-card"><img src="${source}" alt="" draggable="false" decoding="async"></figure>`;
   }).join("");
   detailPeekPrevCard.innerHTML = renderStack(-1);
   detailPeekNextCard.innerHTML = renderStack(1);
@@ -258,7 +294,7 @@ function fitDetailStage(source) {
     const ratio = image.naturalWidth / image.naturalHeight || 1;
     const mobile = innerWidth <= 760;
     const maxWidth = innerWidth * (mobile ? .9 : .68);
-    const maxHeight = innerHeight * (mobile ? .68 : .78);
+    const maxHeight = innerHeight * (mobile ? .6 : .78);
     const width = Math.min(maxWidth, maxHeight * ratio);
     const height = width / ratio;
     detailGallery.style.setProperty("--detail-width", `${Math.round(width)}px`);
@@ -274,7 +310,7 @@ function renderGallery(project) {
   detailTrack.innerHTML = loopedFrames.map((image, index) => {
     const clone = index === 0 || index === loopedFrames.length - 1;
     const alt = clone ? "" : `${project.title}, image ${index} of ${detailFrames.length}`;
-    return `<figure class="detail-slide"${clone ? ' aria-hidden="true"' : ""}><img src="${image}" alt="${alt}" draggable="false"></figure>`;
+    return `<figure class="detail-slide"${clone ? ' aria-hidden="true"' : ""}><img src="${image}" alt="${alt}" draggable="false" decoding="async"></figure>`;
   }).join("");
   detailSlideIndex = 0;
   detailPhysicalIndex = 1;
@@ -294,7 +330,8 @@ function renderAplus(project) {
 
   aplusList.innerHTML = modules.map((moduleFrames, moduleIndex) => {
     const slides = moduleFrames.map((image, slideIndex) => {
-      return `<figure class="aplus-slide"><img src="${image}" alt="${project.title}, Advanced A+ module ${moduleIndex + 1}, slide ${slideIndex + 1}" draggable="false"></figure>`;
+      const loading = moduleIndex === 0 && slideIndex === 0 ? "eager" : "lazy";
+      return `<figure class="aplus-slide"><img src="${image}" alt="${project.title}, Advanced A+ module ${moduleIndex + 1}, slide ${slideIndex + 1}" draggable="false" loading="${loading}" decoding="async"></figure>`;
     }).join("");
     return `<article class="aplus-module" data-slide="0" data-module-label="Module ${String(moduleIndex + 1).padStart(2, "0")}">
       <div class="aplus-track">${slides}</div>
@@ -433,7 +470,24 @@ projectLinks.forEach((link, index) => link.addEventListener("click", (event) => 
 detailClose.addEventListener("click", () => closeDetail());
 detailPrev.addEventListener("click", () => goToDetailSlide(-1));
 detailNext.addEventListener("click", () => goToDetailSlide(1));
-detailScrollNext.addEventListener("click", () => aplusSection.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" }));
+detailScrollNext.addEventListener("click", () => {
+  detailScrollTween?.kill();
+  if (reducedMotion) {
+    detail.scrollTop = aplusSection.offsetTop;
+    return;
+  }
+  const scrollState = { top: detail.scrollTop };
+  detailScrollTween = gsap.to(scrollState, {
+    top: aplusSection.offsetTop,
+    duration: .95,
+    ease: "power3.inOut",
+    overwrite: true,
+    onUpdate: () => { detail.scrollTop = scrollState.top; },
+    onComplete: () => { detailScrollTween = null; }
+  });
+});
+detail.addEventListener("wheel", () => detailScrollTween?.kill(), { passive: true });
+detail.addEventListener("touchstart", () => detailScrollTween?.kill(), { passive: true });
 aplusList.addEventListener("click", (event) => {
   const button = event.target.closest("[data-aplus-direction]");
   if (!button) return;
@@ -542,20 +596,29 @@ function setSoundActive(active) {
   }
 }
 
-const showreelCopy = document.querySelector(".showreel-copy");
-const showreelText = "2B YOUTH HAVE LOTS OF FUN · 2025 ·";
-showreelCopy.innerHTML = [...showreelText].map((character, index) => {
-  const angle = -105 + index * (220 / Math.max(showreelText.length - 1, 1));
-  return `<span style="transform: translate(-50%,-100%) rotate(${angle}deg)">${character === " " ? "&nbsp;" : character}</span>`;
+const portfolioText = document.querySelector(".portfolio-text");
+portfolioText.innerHTML = [...portfolioText.textContent].map((character) => {
+  const spaceClass = character === " " ? " is-space" : "";
+  return `<span class="portfolio-letter${spaceClass}">${character === " " ? "&nbsp;" : character}</span>`;
 }).join("");
+const portfolioLetters = gsap.utils.toArray(".portfolio-letter");
 
 let brandMotionStarted = false;
 function startBrandMotion() {
   if (brandMotionStarted || reducedMotion) return;
   brandMotionStarted = true;
   gsap.to(".brand", { y: 4, rotation: 1.4, repeat: -1, yoyo: true, duration: 2.8, ease: "sine.inOut" });
-  gsap.to(".showreel img", { y: -7, rotation: 1.6, repeat: -1, yoyo: true, duration: 3.2, ease: "sine.inOut" });
-  gsap.to(".showreel-copy", { rotation: 4, repeat: -1, yoyo: true, duration: 3.6, ease: "sine.inOut", transformOrigin: "50% 72%" });
+  gsap.to(portfolioLetters, {
+    y: (index) => index % 2 ? -3 : 3,
+    rotation: (index) => index % 3 - 1,
+    repeat: -1,
+    yoyo: true,
+    duration: 1.6,
+    stagger: { each: .055, from: "center" },
+    ease: "sine.inOut",
+    force3D: true
+  });
+  gsap.to(".portfolio-line", { scaleX: .62, xPercent: 18, autoAlpha: .72, repeat: -1, yoyo: true, duration: 2.2, ease: "sine.inOut", force3D: true });
 }
 
 function enterSite(event) {
@@ -569,7 +632,7 @@ function enterSite(event) {
     .to(loader, { yPercent: 105, duration: reducedMotion ? 0 : .72 })
     .to(shell, { autoAlpha: 1, duration: .25 }, "<.18")
     .from([".brand", ".view-switch", ".menu-toggle", ".sound-toggle"], { y: -24, autoAlpha: 0, stagger: .055, duration: .65, ease: "power3.out" }, "<")
-    .from(".showreel", { xPercent: -70, rotation: -30, autoAlpha: 0, duration: .8, ease: "back.out(1.5)" }, "<.1")
+    .from(".showreel", { x: -48, y: 18, autoAlpha: 0, duration: .8, ease: "back.out(1.5)" }, "<.1")
     .to(spiralState, { reveal: 1, duration: reducedMotion ? 0 : 1.15, ease: "power3.out" }, "<")
     .from(spiralHint, { autoAlpha: 0, y: 10, duration: .5 }, "-=.25")
     .set(loader, { display: "none" })
@@ -695,9 +758,21 @@ gsap.timeline({
   .from(".about h1", { y: 90, autoAlpha: 0, rotationX: -12, duration: .95, ease: "power3.out" }, "-=.15")
   .from(".about > p:last-child", { y: 35, autoAlpha: 0, duration: .65 }, "-=.4");
 
-window.addEventListener("resize", updateSpiral);
+let resizeFrame = 0;
 window.addEventListener("resize", () => {
-  if (detail.getAttribute("aria-hidden") === "false" && detailFrames.length) fitDetailStage(detailFrames[detailSlideIndex]);
+  cancelAnimationFrame(resizeFrame);
+  resizeFrame = requestAnimationFrame(() => {
+    refreshSpiralLayout();
+    updateSpiral();
+    if (detail.getAttribute("aria-hidden") === "false" && detailFrames.length) {
+      updateDetailPreviews();
+      fitDetailStage(detailFrames[detailSlideIndex]);
+    }
+  });
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) gsap.ticker.sleep();
+  else gsap.ticker.wake();
 });
 window.addEventListener("load", () => {
   updateSpiral();
