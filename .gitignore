@@ -1,4 +1,5 @@
 RECON/
 Thumbs.db
 .DS_Store
-
+node_modules/
+qa/

@@ -5,8 +5,11 @@ const shell = document.querySelector(".site-shell");
 const loader = document.querySelector(".loader");
 const counter = document.querySelector(".loader-count");
 const enterButtons = document.querySelectorAll(".enter-button, .silent-enter");
+const brand = document.querySelector(".brand");
 const projectList = document.querySelector(".project-list");
 const projectLinks = gsap.utils.toArray(".project");
+const listPreview = document.querySelector(".list-preview");
+const listPreviewImage = listPreview.querySelector("img");
 const spiralScene = document.querySelector(".spiral-scene");
 const spiralWorld = document.querySelector(".spiral-world");
 const spiralHint = document.querySelector(".spiral-hint");
@@ -33,32 +36,33 @@ const detailPeekNextCard = document.querySelector(".detail-peek-next");
 const detailPeekCards = [detailPeekPrevCard, detailPeekNextCard];
 const detailTitle = document.querySelector(".detail-title");
 const detailCaption = document.querySelector(".detail-caption");
-const detailYear = document.querySelector(".detail-year");
-const detailSlug = document.querySelector(".detail-slug");
 const detailScrollNext = document.querySelector(".detail-scroll-next");
 const aplusSection = document.querySelector(".aplus-section");
 const aplusList = document.querySelector(".aplus-list");
 const backgroundMusic = document.querySelector(".background-music");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let aplusAutoplayTimer = null;
 
 document.body.classList.add("spiral-active");
 gsap.set(shell, { autoAlpha: 0 });
 gsap.set([".loader-copy span", ".enter-button", ".silent-enter"], { autoAlpha: 0, y: 28 });
 
 const projectCaptions = [
-  "P5 50000Mah大容量移动电源",
+  "P5 50000mAh移动电源",
   "H9 无线头戴式蓝牙耳机",
-  "Psychedelic explainer film",
-  "Robot file output",
-  "A journey around Jupiter",
-  "Chromatic motion experiments",
-  "Postcards from a digital journey",
-  "UI terms visual study",
-  "A study in light and purity"
+  "W5 5000mAh磁吸充电宝",
+  "M100 头戴式话务耳机",
+  "W16 磁吸支架充电宝",
+  "T07 运动蓝牙耳机",
+  "K11 墙插充电宝",
+  "G8 挂耳式话务耳机",
+  "P8 50000mAh移动电源",
+  "A1 TWS蓝牙耳机",
+  "W7 5000mAh磁吸充电宝"
 ];
 
 const projectGalleries = {
-  "P5 50000Mah大容量移动电源": [
+  "P5 50000mAh移动电源": [
     "assets/p5/p5-black-01.jpg",
     "assets/p5/p5-black-02.jpg",
     "assets/p5/p5-black-03.jpg",
@@ -77,6 +81,84 @@ const projectGalleries = {
     "assets/h9/h9-black-06.jpg",
     "assets/h9/h9-black-07.jpg",
     "assets/h9/h9-black-08.jpg"
+  ],
+  "W5 5000mAh磁吸充电宝": [
+    "assets/w5/w5-gray-01.jpg",
+    "assets/w5/w5-gray-02.jpg",
+    "assets/w5/w5-gray-03.jpg",
+    "assets/w5/w5-gray-04.jpg",
+    "assets/w5/w5-gray-05.jpg",
+    "assets/w5/w5-gray-06.jpg",
+    "assets/w5/w5-gray-07.jpg"
+  ],
+  "M100 头戴式话务耳机": [
+    "assets/m100/m100-black-01.jpg",
+    "assets/m100/m100-black-02.jpg",
+    "assets/m100/m100-black-03.jpg",
+    "assets/m100/m100-black-04.jpg",
+    "assets/m100/m100-black-05.jpg",
+    "assets/m100/m100-black-06.jpg"
+  ],
+  "W16 磁吸支架充电宝": [
+    "assets/w16/w16-01.jpg",
+    "assets/w16/w16-02.jpg",
+    "assets/w16/w16-03.jpg",
+    "assets/w16/w16-04.jpg",
+    "assets/w16/w16-05.jpg",
+    "assets/w16/w16-06.jpg"
+  ],
+  "T07 运动蓝牙耳机": [
+    "assets/t07/t07-01.jpg",
+    "assets/t07/t07-02.jpg",
+    "assets/t07/t07-03.jpg",
+    "assets/t07/t07-04.jpg",
+    "assets/t07/t07-05.jpg",
+    "assets/t07/t07-06.jpg"
+  ],
+  "K11 墙插充电宝": [
+    "assets/k11/k11-01.jpg",
+    "assets/k11/k11-02.jpg",
+    "assets/k11/k11-03.jpg",
+    "assets/k11/k11-04.jpg",
+    "assets/k11/k11-05.jpg",
+    "assets/k11/k11-06.jpg",
+    "assets/k11/k11-07.jpg"
+  ],
+  "G8 挂耳式话务耳机": [
+    "assets/g8/g8-01.jpg",
+    "assets/g8/g8-02.jpg",
+    "assets/g8/g8-03.jpg",
+    "assets/g8/g8-04.jpg",
+    "assets/g8/g8-05.jpg",
+    "assets/g8/g8-06.jpg",
+    "assets/g8/g8-07.jpg",
+    "assets/g8/g8-08.jpg",
+    "assets/g8/g8-09.jpg"
+  ],
+  "P8 50000mAh移动电源": [
+    "assets/p8/p8-01.jpg",
+    "assets/p8/p8-02.jpg",
+    "assets/p8/p8-03.jpg",
+    "assets/p8/p8-04.jpg",
+    "assets/p8/p8-05.jpg",
+    "assets/p8/p8-06.jpg",
+    "assets/p8/p8-07.jpg"
+  ],
+  "A1 TWS蓝牙耳机": [
+    "assets/a1/a1-01.jpg",
+    "assets/a1/a1-02.jpg",
+    "assets/a1/a1-03.jpg",
+    "assets/a1/a1-04.jpg",
+    "assets/a1/a1-05.jpg",
+    "assets/a1/a1-06.jpg"
+  ],
+  "W7 5000mAh磁吸充电宝": [
+    "assets/w7/w7-01.jpg",
+    "assets/w7/w7-02.jpg",
+    "assets/w7/w7-03.jpg",
+    "assets/w7/w7-04.jpg",
+    "assets/w7/w7-05.jpg",
+    "assets/w7/w7-06.jpg"
   ]
 };
 
@@ -90,10 +172,116 @@ const p5AplusModules = [
   ["assets/aplus/A+_07.jpg", "assets/aplus/A+_14.jpg"]
 ];
 
+const h9AplusModules = [
+  ["assets/h9-aplus/A+_01.jpg"],
+  ["assets/h9-aplus/A+_02.jpg"],
+  ["assets/h9-aplus/A+_03.jpg"],
+  ["assets/h9-aplus/A+_04.jpg", "assets/h9-aplus/A+_08.jpg", "assets/h9-aplus/A+_09.jpg"],
+  ["assets/h9-aplus/A+_05.jpg", "assets/h9-aplus/A+_10.jpg", "assets/h9-aplus/A+_12.jpg", "assets/h9-aplus/A+_13.jpg"],
+  ["assets/h9-aplus/A+_06.jpg", "assets/h9-aplus/A+_11.jpg", "assets/h9-aplus/A+_14.jpg"],
+  ["assets/h9-aplus/A+_07.jpg", "assets/h9-aplus/A+_15.jpg"]
+];
+
+const w5AplusModules = [
+  ["assets/w5-aplus/A+_01.jpg"],
+  ["assets/w5-aplus/A+_02.jpg", "assets/w5-aplus/A+_06.jpg", "assets/w5-aplus/A+_09.jpg"],
+  ["assets/w5-aplus/A+_03.jpg"],
+  ["assets/w5-aplus/A+_04.jpg"],
+  ["assets/w5-aplus/A+_05.jpg", "assets/w5-aplus/A+_07.jpg", "assets/w5-aplus/A+_08.jpg"],
+  ["assets/w5-aplus/A+_13.jpg", "assets/w5-aplus/A+_12.jpg", "assets/w5-aplus/A+_11.jpg", "assets/w5-aplus/A+_14.jpg", "assets/w5-aplus/A+_15.jpg"],
+  ["assets/w5-aplus/A+_10.jpg", "assets/w5-aplus/A+_16.jpg"]
+];
+
+const m100AplusModules = [
+  ["assets/m100-aplus/A+_01.jpg"],
+  ["assets/m100-aplus/A+_02.jpg"],
+  ["assets/m100-aplus/A+_03.jpg"],
+  ["assets/m100-aplus/A+_04.jpg", "assets/m100-aplus/A+_07.jpg", "assets/m100-aplus/A+_08.jpg"],
+  ["assets/m100-aplus/A+_05.jpg", "assets/m100-aplus/A+_09.jpg"],
+  ["assets/m100-aplus/A+_06.jpg", "assets/m100-aplus/A+_10.jpg", "assets/m100-aplus/A+_11.jpg", "assets/m100-aplus/A+_12.jpg"]
+];
+
+const w16AplusModules = [
+  ["assets/w16-aplus/A+_01.jpg"],
+  ["assets/w16-aplus/A+_02.jpg"],
+  ["assets/w16-aplus/A+_03.jpg"],
+  ["assets/w16-aplus/A+_04.jpg", "assets/w16-aplus/A+_07.jpg", "assets/w16-aplus/A+_08.jpg"],
+  ["assets/w16-aplus/A+_05.jpg", "assets/w16-aplus/A+_10.jpg", "assets/w16-aplus/A+_09.jpg"],
+  ["assets/w16-aplus/A+_06.jpg"]
+];
+
+const t07AplusModules = [
+  ["assets/t07-aplus/A+_01.jpg"],
+  ["assets/t07-aplus/A+_02.jpg"],
+  ["assets/t07-aplus/A+_03.jpg", "assets/t07-aplus/A+_08.jpg"],
+  ["assets/t07-aplus/A+_04.jpg", "assets/t07-aplus/A+_09.jpg"],
+  ["assets/t07-aplus/A+_05.jpg"],
+  ["assets/t07-aplus/A+_06.jpg"],
+  ["assets/t07-aplus/A+_07.jpg", "assets/t07-aplus/A+_10.jpg"]
+];
+
+const k11AplusModules = [
+  ["assets/k11-aplus/A+_01.jpg"],
+  ["assets/k11-aplus/A+_02.jpg"],
+  ["assets/k11-aplus/A+_03.jpg"],
+  ["assets/k11-aplus/A+_04.jpg", "assets/k11-aplus/A+_07.jpg"],
+  ["assets/k11-aplus/A+_05.jpg", "assets/k11-aplus/A+_08.jpg"],
+  ["assets/k11-aplus/A+_06.jpg", "assets/k11-aplus/A+_09.jpg", "assets/k11-aplus/A+_10.jpg", "assets/k11-aplus/A+_11.jpg"]
+];
+
+const g8AplusModules = [
+  ["assets/g8-aplus/A+_01.jpg"],
+  ["assets/g8-aplus/A+_02.jpg"],
+  ["assets/g8-aplus/A+_03.jpg"],
+  ["assets/g8-aplus/A+_04.jpg", "assets/g8-aplus/A+_05.jpg", "assets/g8-aplus/A+_06.jpg"],
+  ["assets/g8-aplus/A+_07.jpg", "assets/g8-aplus/A+_08.jpg", "assets/g8-aplus/A+_09.jpg"],
+  ["assets/g8-aplus/A+_10.jpg", "assets/g8-aplus/A+_11.jpg", "assets/g8-aplus/A+_12.jpg"],
+  ["assets/g8-aplus/A+_13.jpg", "assets/g8-aplus/A+_14.jpg", "assets/g8-aplus/A+_15.jpg"]
+];
+
+const p8AplusModules = [
+  ["assets/p8-aplus/A+_01.jpg"],
+  ["assets/p8-aplus/A+_02.jpg"],
+  ["assets/p8-aplus/A+_03.jpg"],
+  ["assets/p8-aplus/A+_04.jpg", "assets/p8-aplus/A+_08.jpg", "assets/p8-aplus/A+_09.jpg"],
+  ["assets/p8-aplus/A+_05.jpg"],
+  ["assets/p8-aplus/A+_06.jpg", "assets/p8-aplus/A+_10.jpg", "assets/p8-aplus/A+_11.jpg"],
+  ["assets/p8-aplus/A+_07.jpg"]
+];
+
+const a1AplusModules = [
+  ["assets/a1-aplus/A+_01.jpg"],
+  ["assets/a1-aplus/A+_02.jpg"],
+  ["assets/a1-aplus/A+_03.jpg"],
+  ["assets/a1-aplus/A+_04.jpg"],
+  ["assets/a1-aplus/A+_05.jpg"],
+  ["assets/a1-aplus/A+_06.jpg"],
+  ["assets/a1-aplus/A+_07.jpg", "assets/a1-aplus/A+_08.jpg"]
+];
+
+const w7AplusModules = [
+  ["assets/w7-aplus/A+_01.jpg"],
+  ["assets/w7-aplus/A+_02.jpg"],
+  ["assets/w7-aplus/A+_03.jpg"],
+  ["assets/w7-aplus/A+_05.jpg", "assets/w7-aplus/A+_04.jpg"],
+  ["assets/w7-aplus/A+_06.jpg", "assets/w7-aplus/A+_07.jpg"],
+  ["assets/w7-aplus/A+_08.jpg", "assets/w7-aplus/A+_09.jpg", "assets/w7-aplus/A+_10.jpg"]
+];
+
 // Add a project title here when its own product imagery is ready. Until then,
 // every project uses the same complete detail-page template as the P5 project.
 const projectAplusModules = {
-  "P5 50000Mah大容量移动电源": p5AplusModules
+  "P5 50000mAh移动电源": p5AplusModules,
+  "H9 无线头戴式蓝牙耳机": h9AplusModules,
+  "W5 5000mAh磁吸充电宝": w5AplusModules,
+  "M100 头戴式话务耳机": m100AplusModules,
+  "W16 磁吸支架充电宝": w16AplusModules,
+  "T07 运动蓝牙耳机": t07AplusModules,
+  "K11 墙插充电宝": k11AplusModules,
+  "G8 挂耳式话务耳机": g8AplusModules,
+  "P8 50000mAh移动电源": p8AplusModules,
+  "A1 TWS蓝牙耳机": a1AplusModules,
+  "W7 5000mAh磁吸充电宝": w7AplusModules
 };
 
 const createPlaceholderGallery = (image) => Array.from({ length: 8 }, () => image);
@@ -118,8 +306,8 @@ const spiralCards = [...projects, ...projects].map((project, index) => {
   card.className = "spiral-card";
   card.href = `#project/${project.slug}`;
   card.dataset.index = String(index);
-  card.setAttribute("aria-label", `${project.title}, ${project.year}`);
-  card.innerHTML = `<img src="${project.image}" alt="" draggable="false" decoding="async"><span class="spiral-card-label">${project.title} · ${project.year}</span>`;
+  card.setAttribute("aria-label", project.title);
+  card.innerHTML = `<img src="${project.image}" alt="" draggable="false" decoding="async"><span class="spiral-card-echo" style="--echo-image: url('${project.image}')" aria-hidden="true"></span><span class="spiral-card-label">${project.title}</span>`;
   spiralWorld.appendChild(card);
   return card;
 });
@@ -160,6 +348,7 @@ function updateSpiral() {
   const radiusX = Math.min(spiralLayout.width * (spiralLayout.mobile ? .29 : .225), spiralLayout.mobile ? 176 : 430);
   const radiusZ = Math.min(spiralLayout.width * (spiralLayout.mobile ? .22 : .15), spiralLayout.mobile ? 126 : 285);
   const verticalGap = clamp(spiralLayout.mobile ? 44 : 52, spiralLayout.mobile ? 58 : 76, spiralLayout.height * (spiralLayout.mobile ? .058 : .074));
+  const verticalOffset = spiralLayout.mobile ? 0 : Math.max(24, spiralLayout.height * .035);
   const frontRelative = Math.PI / 2 / .85;
   const hiddenLift = (1 - spiralState.reveal) * 420;
   const radiusReveal = .48 + spiralState.reveal * .52;
@@ -172,17 +361,24 @@ function updateSpiral() {
     const relative = normalized - centerIndex;
     const angle = relative * .85;
     const x = Math.cos(angle) * radiusX * radiusReveal;
-    const y = (relative - frontRelative) * verticalGap - spiralLayout.height * (spiralLayout.mobile ? .01 : .018) - hiddenLift;
+    const y = (relative - frontRelative) * verticalGap + verticalOffset - hiddenLift;
     const z = Math.sin(angle) * radiusZ * radiusReveal;
     const rotationY = (-angle + Math.PI / 2) * 180 / Math.PI;
-    const edgeFade = clamp(0, 1, 1 - Math.max(0, Math.abs(relative) - 7) / 2);
+    const edgeStart = spiralLayout.mobile ? 3.15 : 5.2;
+    const edgeRange = spiralLayout.mobile ? 1.15 : 1.6;
+    const edgeFade = clamp(0, 1, 1 - Math.max(0, Math.abs(relative) - edgeStart) / edgeRange);
+    const viewportCenterY = spiralLayout.height / 2 + y;
+    const menuSafeFade = spiralLayout.mobile ? 1 : clamp(0, 1,
+      (Math.abs(x) - 180) / 140 + (viewportCenterY - 110) / 90
+    );
     const depth = clamp(0, 1, (z + radiusZ) / (radiusZ * 2));
     const focus = Math.pow(depth, 2.25);
-    const depthFade = clamp(.18, 1, depth * 1.35);
-    const opacity = edgeFade * (.42 + depthFade * .58) * spiralState.reveal;
+    const opacity = edgeFade * menuSafeFade * spiralState.reveal;
     const rawBlur = spiralLayout.mobile ? (1 - focus) * 1.1 : (1 - focus) * 3.1 + motionBlur;
     const blur = Math.round(clamp(0, spiralLayout.mobile ? 1.2 : 4.2, rawBlur) * 4) / 4;
     const scale = .83 + focus * .47;
+    const mosaic = reducedMotion || spiralLayout.mobile ? 0 : clamp(0, .42, Math.abs(spiralState.velocity) * .75) * (.45 + (1 - focus) * .75);
+    const echoShift = clamp(-18, 18, spiralState.velocity * 20 + Math.sin(angle) * 5);
 
     const bendValue = (Math.round(speedBend * 4) / 4).toFixed(2);
     const blurValue = `${blur.toFixed(2)}px`;
@@ -194,7 +390,9 @@ function updateSpiral() {
       card.dataset.blur = blurValue;
       card.style.setProperty("--blur", blurValue);
     }
-    card.classList.toggle("is-focus", focus > .92 && edgeFade > .8);
+    card.style.setProperty("--mosaic", mosaic.toFixed(3));
+    card.style.setProperty("--echo-shift", `${echoShift.toFixed(1)}px`);
+    card.classList.toggle("is-focus", focus > .92 && edgeFade > .8 && Math.abs(y) < verticalGap * 1.25);
     gsap.set(card, {
       x,
       y,
@@ -310,7 +508,9 @@ function renderGallery(project) {
   detailTrack.innerHTML = loopedFrames.map((image, index) => {
     const clone = index === 0 || index === loopedFrames.length - 1;
     const alt = clone ? "" : `${project.title}, image ${index} of ${detailFrames.length}`;
-    return `<figure class="detail-slide"${clone ? ' aria-hidden="true"' : ""}><img src="${image}" alt="${alt}" draggable="false" decoding="async"></figure>`;
+    const loading = index === 1 ? "eager" : "lazy";
+    const priority = index === 1 ? ' fetchpriority="high"' : "";
+    return `<figure class="detail-slide"${clone ? ' aria-hidden="true"' : ""}><img src="${image}" alt="${alt}" draggable="false" loading="${loading}" decoding="async"${priority}></figure>`;
   }).join("");
   detailSlideIndex = 0;
   detailPhysicalIndex = 1;
@@ -322,8 +522,9 @@ function renderGallery(project) {
 }
 
 function renderAplus(project) {
+  stopAplusAutoplay();
   const modules = project.aplus || [];
-  const hasAplus = modules.length === 7;
+  const hasAplus = modules.length > 0;
   detail.classList.toggle("has-aplus", hasAplus);
   aplusList.replaceChildren();
   if (!hasAplus) return;
@@ -339,6 +540,25 @@ function renderAplus(project) {
       <button class="aplus-arrow aplus-next" type="button" data-aplus-direction="1" aria-label="Next A+ image"></button>` : ""}
     </article>`;
   }).join("");
+  startAplusAutoplay();
+}
+
+function stopAplusAutoplay() {
+  if (!aplusAutoplayTimer) return;
+  window.clearInterval(aplusAutoplayTimer);
+  aplusAutoplayTimer = null;
+}
+
+function startAplusAutoplay() {
+  stopAplusAutoplay();
+  if (reducedMotion) return;
+  const modules = [...aplusList.querySelectorAll(".aplus-module")]
+    .filter((module) => module.querySelector(".aplus-track").children.length > 1);
+  if (!modules.length) return;
+  aplusAutoplayTimer = window.setInterval(() => {
+    if (document.hidden || detail.getAttribute("aria-hidden") === "true") return;
+    modules.forEach((module) => goToAplusSlide(module, 1));
+  }, 3000);
 }
 
 function goToAplusSlide(module, direction) {
@@ -396,8 +616,6 @@ function renderDetail(project) {
   renderAplus(project);
   detailTitle.textContent = project.caption;
   detailCaption.textContent = project.title;
-  detailYear.textContent = project.year;
-  detailSlug.textContent = project.slug.replaceAll("-", " ");
 }
 
 function openDetail(project, { updateHistory = true, trigger = null } = {}) {
@@ -422,6 +640,7 @@ function openDetail(project, { updateHistory = true, trigger = null } = {}) {
 
 function closeDetail({ updateHistory = true } = {}) {
   if (detail.getAttribute("aria-hidden") === "true") return;
+  stopAplusAutoplay();
   galleryTransition?.kill();
   galleryAnimating = false;
   galleryDragging = false;
@@ -492,6 +711,7 @@ aplusList.addEventListener("click", (event) => {
   const button = event.target.closest("[data-aplus-direction]");
   if (!button) return;
   goToAplusSlide(button.closest(".aplus-module"), Number(button.dataset.aplusDirection));
+  startAplusAutoplay();
 });
 detail.addEventListener("click", (event) => { if (event.target === detail) closeDetail(); });
 window.addEventListener("keydown", (event) => {
@@ -568,10 +788,15 @@ gsap.to(loadState, {
 });
 
 gsap.timeline({ defaults: { ease: "power3.out" } })
-  .from(".loader-mark img", { scale: .42, rotation: -18, autoAlpha: 0, duration: .82, ease: "back.out(1.5)" })
-  .to(".loader-mark img", { scale: 1.035, repeat: 1, yoyo: true, duration: .34, ease: "sine.inOut" }, "-=.18")
+  .from(".loader-mark", { scale: .68, autoAlpha: 0, duration: .9, ease: "back.out(1.45)" })
+  .from(".loader-mark img", { scale: 1.18, filter: "blur(14px)", duration: .86, ease: "power3.out" }, "<")
+  .to(".loader-mark img", { scale: 1.025, repeat: 1, yoyo: true, duration: .34, ease: "sine.inOut" }, "-=.2")
   .to(".loader-copy span", { autoAlpha: 1, y: 0, stagger: .09, duration: .7 }, "-=.35")
   .to([".enter-button", ".silent-enter"], { autoAlpha: 1, y: 0, stagger: .08, duration: .5 }, "-=.3");
+
+if (!reducedMotion) {
+  gsap.to(".loader-mark", { y: -7, scale: 1.018, duration: 2.25, repeat: -1, yoyo: true, ease: "sine.inOut" });
+}
 
 function animateSoundBars(active) {
   gsap.killTweensOf(".sound-toggle span");
@@ -602,6 +827,7 @@ portfolioText.innerHTML = [...portfolioText.textContent].map((character) => {
   return `<span class="portfolio-letter${spaceClass}">${character === " " ? "&nbsp;" : character}</span>`;
 }).join("");
 const portfolioLetters = gsap.utils.toArray(".portfolio-letter");
+const projectTitleSpans = gsap.utils.toArray(".project > span");
 
 let brandMotionStarted = false;
 function startBrandMotion() {
@@ -619,6 +845,16 @@ function startBrandMotion() {
     force3D: true
   });
   gsap.to(".portfolio-line", { scaleX: .62, xPercent: 18, autoAlpha: .72, repeat: -1, yoyo: true, duration: 2.2, ease: "sine.inOut", force3D: true });
+  gsap.to(projectTitleSpans, {
+    y: (index) => index % 2 ? -2.5 : 2.5,
+    rotation: (index) => index % 3 === 0 ? -.18 : .18,
+    repeat: -1,
+    yoyo: true,
+    duration: (index) => 2.6 + index % 4 * .18,
+    stagger: { each: .08, from: "center" },
+    ease: "sine.inOut",
+    force3D: true
+  });
 }
 
 function enterSite(event) {
@@ -643,6 +879,25 @@ function enterSite(event) {
     });
 }
 enterButtons.forEach((button) => button.addEventListener("click", enterSite));
+
+function returnToLoader(event) {
+  event.preventDefault();
+  setSoundActive(false);
+  if (detail.getAttribute("aria-hidden") === "false") closeDetail({ updateHistory: false });
+  history.replaceState(null, "", `${location.pathname}${location.search}`);
+  loader.dataset.leaving = "true";
+  loader.setAttribute("aria-hidden", "false");
+  shell.setAttribute("aria-hidden", "true");
+
+  gsap.timeline({ defaults: { ease: "power3.inOut" } })
+    .set(loader, { display: "grid", yPercent: 0, autoAlpha: 0 })
+    .set(".loader > *", { autoAlpha: 1, y: 0 })
+    .to(shell, { autoAlpha: 0, duration: reducedMotion ? 0 : .3 }, 0)
+    .to(loader, { autoAlpha: 1, duration: reducedMotion ? 0 : .38 }, 0)
+    .set(shell, { visibility: "hidden" })
+    .add(() => { delete loader.dataset.leaving; });
+}
+brand.addEventListener("click", returnToLoader);
 
 gsap.set(menu, { xPercent: 108, autoAlpha: 0 });
 const menuTimeline = gsap.timeline({ paused: true, defaults: { ease: "power4.inOut" } })
@@ -702,7 +957,10 @@ menuSubpageCloses.forEach((button) => button.addEventListener("click", closeMenu
 menuProjectLink.addEventListener("click", (event) => {
   event.preventDefault();
   setMenu(false);
-  gsap.delayedCall(reducedMotion ? 0 : .28, () => setView("list"));
+  gsap.delayedCall(reducedMotion ? 0 : .28, () => {
+    playViewSwitchSound("list");
+    setView("list");
+  });
 });
 
 function setView(mode) {
@@ -735,9 +993,43 @@ function setView(mode) {
     });
   }
 }
-viewButtons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+viewButtons.forEach((button) => button.addEventListener("click", () => {
+  const mode = button.dataset.view;
+  if ((mode === "spiral") !== spiralState.active) playViewSwitchSound(mode);
+  setView(mode);
+}));
 
 soundToggle.addEventListener("click", () => setSoundActive(soundToggle.getAttribute("aria-pressed") !== "true"));
+
+let uiAudioContext = null;
+function playViewSwitchSound(mode) {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  uiAudioContext ||= new AudioContext();
+  if (uiAudioContext.state === "suspended") uiAudioContext.resume();
+
+  const now = uiAudioContext.currentTime;
+  const gain = uiAudioContext.createGain();
+  const low = uiAudioContext.createOscillator();
+  const high = uiAudioContext.createOscillator();
+  const ascending = mode === "spiral";
+  low.type = "sine";
+  high.type = "triangle";
+  low.frequency.setValueAtTime(ascending ? 240 : 410, now);
+  low.frequency.exponentialRampToValueAtTime(ascending ? 420 : 230, now + .18);
+  high.frequency.setValueAtTime(ascending ? 520 : 760, now);
+  high.frequency.exponentialRampToValueAtTime(ascending ? 760 : 480, now + .14);
+  gain.gain.setValueAtTime(.0001, now);
+  gain.gain.exponentialRampToValueAtTime(.055, now + .018);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + .22);
+  low.connect(gain);
+  high.connect(gain);
+  gain.connect(uiAudioContext.destination);
+  low.start(now);
+  high.start(now + .012);
+  low.stop(now + .23);
+  high.stop(now + .2);
+}
 
 const mm = gsap.matchMedia();
 mm.add({ desktop: "(min-width: 761px)", reduce: "(prefers-reduced-motion: reduce)" }, (context) => {
@@ -746,8 +1038,54 @@ mm.add({ desktop: "(min-width: 761px)", reduce: "(prefers-reduced-motion: reduce
     const xTo = gsap.quickTo(".cursor-orb", "x", { duration: .35, ease: "power3.out" });
     const yTo = gsap.quickTo(".cursor-orb", "y", { duration: .35, ease: "power3.out" });
     const onMove = (event) => { xTo(event.clientX); yTo(event.clientY); };
+    const positionPreview = (link) => {
+      const title = link.querySelector("span") || link;
+      const rect = title.getBoundingClientRect();
+      const previewWidth = clamp(220, 300, innerWidth * .16);
+      const previewHeight = previewWidth / 1.7;
+      const gap = clamp(22, 42, innerWidth * .022);
+      const x = clamp(previewWidth / 2 + 18, innerWidth - previewWidth / 2 - 18, rect.right + gap + previewWidth / 2);
+      const y = clamp(previewHeight / 2 + 18, innerHeight - previewHeight / 2 - 18, rect.top + rect.height / 2);
+      gsap.to(listPreview, {
+        x,
+        y,
+        rotation: clamp(-2.4, 2.4, (y / innerHeight - .5) * 4.8),
+        duration: .44,
+        ease: "power3.out",
+        overwrite: "auto",
+        force3D: true
+      });
+    };
+    const showPreview = (event) => {
+      const link = event.currentTarget;
+      if (listPreviewImage.getAttribute("src") !== link.dataset.image) listPreviewImage.src = link.dataset.image;
+      positionPreview(link);
+      gsap.fromTo(listPreview,
+        { autoAlpha: 0, scale: .82 },
+        { autoAlpha: 1, scale: 1, duration: .42, ease: "power3.out", overwrite: "auto", force3D: true }
+      );
+    };
+    const hidePreview = () => gsap.to(listPreview, { autoAlpha: 0, scale: .88, duration: .24, ease: "power2.out", overwrite: true });
+    const previewHandlers = projectLinks.map((link) => {
+      const onFocus = () => showPreview({ currentTarget: link });
+      link.addEventListener("mouseenter", showPreview);
+      link.addEventListener("mouseleave", hidePreview);
+      link.addEventListener("focus", onFocus);
+      link.addEventListener("blur", hidePreview);
+      return { link, onFocus };
+    });
+    gsap.set(listPreview, { xPercent: -50, yPercent: -50, transformOrigin: "50% 50%" });
     window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      previewHandlers.forEach(({ link, onFocus }) => {
+        link.removeEventListener("mouseenter", showPreview);
+        link.removeEventListener("mouseleave", hidePreview);
+        link.removeEventListener("focus", onFocus);
+        link.removeEventListener("blur", hidePreview);
+      });
+      gsap.set(listPreview, { autoAlpha: 0 });
+    };
   }
 });
 
