@@ -345,9 +345,9 @@ function updateSpiral() {
 
   const count = spiralCards.length;
   const centerIndex = Math.floor(count / 2);
-  const radiusX = Math.min(spiralLayout.width * (spiralLayout.mobile ? .29 : .225), spiralLayout.mobile ? 176 : 430);
-  const radiusZ = Math.min(spiralLayout.width * (spiralLayout.mobile ? .22 : .15), spiralLayout.mobile ? 126 : 285);
-  const verticalGap = clamp(spiralLayout.mobile ? 44 : 52, spiralLayout.mobile ? 58 : 76, spiralLayout.height * (spiralLayout.mobile ? .058 : .074));
+  const radiusX = Math.min(spiralLayout.width * (spiralLayout.mobile ? .25 : .225), spiralLayout.mobile ? 112 : 430);
+  const radiusZ = Math.min(spiralLayout.width * (spiralLayout.mobile ? .16 : .15), spiralLayout.mobile ? 76 : 285);
+  const verticalGap = clamp(spiralLayout.mobile ? 98 : 52, spiralLayout.mobile ? 116 : 76, spiralLayout.height * (spiralLayout.mobile ? .12 : .074));
   const verticalOffset = spiralLayout.mobile ? 0 : Math.max(24, spiralLayout.height * .035);
   const frontRelative = Math.PI / 2 / .85;
   const hiddenLift = (1 - spiralState.reveal) * 420;
@@ -364,19 +364,20 @@ function updateSpiral() {
     const y = (relative - frontRelative) * verticalGap + verticalOffset - hiddenLift;
     const z = Math.sin(angle) * radiusZ * radiusReveal;
     const rotationY = (-angle + Math.PI / 2) * 180 / Math.PI;
-    const edgeStart = spiralLayout.mobile ? 3.15 : 5.2;
-    const edgeRange = spiralLayout.mobile ? 1.15 : 1.6;
-    const edgeFade = clamp(0, 1, 1 - Math.max(0, Math.abs(relative) - edgeStart) / edgeRange);
+    const edgeStart = spiralLayout.mobile ? 1.65 : 5.2;
+    const edgeRange = spiralLayout.mobile ? .65 : 1.6;
+    const edgeDistance = spiralLayout.mobile ? Math.abs(relative - frontRelative) : Math.abs(relative);
+    const edgeFade = clamp(0, 1, 1 - Math.max(0, edgeDistance - edgeStart) / edgeRange);
     const viewportCenterY = spiralLayout.height / 2 + y;
-    const menuSafeFade = spiralLayout.mobile ? 1 : clamp(0, 1,
-      (Math.abs(x) - 180) / 140 + (viewportCenterY - 110) / 90
-    );
+    const menuSafeFade = spiralLayout.mobile
+      ? clamp(0, 1, (viewportCenterY - 128) / 72)
+      : clamp(0, 1, (Math.abs(x) - 180) / 140 + (viewportCenterY - 110) / 90);
     const depth = clamp(0, 1, (z + radiusZ) / (radiusZ * 2));
     const focus = Math.pow(depth, 2.25);
     const opacity = edgeFade * menuSafeFade * spiralState.reveal;
     const rawBlur = spiralLayout.mobile ? (1 - focus) * 1.1 : (1 - focus) * 3.1 + motionBlur;
     const blur = Math.round(clamp(0, spiralLayout.mobile ? 1.2 : 4.2, rawBlur) * 4) / 4;
-    const scale = .83 + focus * .47;
+    const scale = spiralLayout.mobile ? .78 + focus * .3 : .83 + focus * .47;
     const mosaic = reducedMotion || spiralLayout.mobile ? 0 : clamp(0, .42, Math.abs(spiralState.velocity) * .75) * (.45 + (1 - focus) * .75);
     const echoShift = clamp(-18, 18, spiralState.velocity * 20 + Math.sin(angle) * 5);
 
